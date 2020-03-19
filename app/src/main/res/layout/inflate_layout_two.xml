@@ -1,0 +1,150 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/txtWorkStation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_regular"
+                android:gravity="center_vertical"
+                android:text="WorkStation"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
+
+
+            <TextView
+                android:id="@+id/txtWorkStationvalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_semibold"
+                android:gravity="center_vertical"
+                android:text="104"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/startDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_regular"
+                android:gravity="center_vertical"
+                android:text="12 Feb 2020"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
+
+
+            <TextView
+                android:id="@+id/startTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_semibold"
+                android:gravity="center_vertical"
+                android:text="09:30am-05.30pm"
+                android:textSize="@dimen/_11sdp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/endDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_regular"
+                android:gravity="center_vertical"
+                android:text="13 Feb 2020"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
+
+
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sourcesanspro_semibold"
+                android:gravity="center_vertical"
+                android:text="09:30am-05.30pm"
+                android:textSize="@dimen/_11sdp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

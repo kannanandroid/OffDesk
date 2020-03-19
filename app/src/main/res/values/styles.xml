@@ -1,0 +1,52 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorAccent</item>
+    </style>
+
+    <style name="LoginTheme" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/an_slide_up</item>
+        <item name="android:windowExitAnimation">@anim/an_slide_bottom</item>
+    </style>
+
+    <declare-styleable name="SimpleArcLoader">
+        <!--<attr name="arc_style" format="enum">
+        <enum name="simple_arc" value="0" />
+        <enum name="complete_arc" value="1" />
+        </attr>-->
+
+        <attr name="arc_margin" format="dimension" />
+        <attr name="arc_thickness" format="dimension" />
+
+        <attr name="arc_speed" format="enum">
+            <enum name="slow" value="0" />
+            <enum name="medium" value="1" />
+            <enum name="fast" value="2" />
+        </attr>
+
+        <attr name="arc_colors" format="reference"></attr>
+
+    </declare-styleable>
+</resources>

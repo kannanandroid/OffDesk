@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_7sdp">
+
+    <TextView
+        android:id="@+id/tv_seat_info_txt_date"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:background="@color/colorPrimary"
+        android:fontFamily="@font/sourcesanspro_semibold"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/_10sdp"
+        android:text="Your booking on 2020-03-20"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_11sdp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvlayoutSeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>
