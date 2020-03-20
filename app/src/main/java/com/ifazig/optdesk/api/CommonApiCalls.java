@@ -2,6 +2,7 @@ package com.ifazig.optdesk.api;
 
 import android.content.Context;
 
+import com.ifazig.optdesk.api_model.BookingConfirmationApiResponse;
 import com.ifazig.optdesk.api_model.BookingHistoryApiResponse;
 import com.ifazig.optdesk.api_model.BookingSuccessApiResponse;
 import com.ifazig.optdesk.api_model.CancelApiResponse;
@@ -158,6 +159,38 @@ public class CommonApiCalls {
 
             @Override
             public void onFailure(Call<BookingSuccessApiResponse> call, Throwable t) {
+                CustomProgressDialog.getInstance().dismiss();
+                t.printStackTrace();
+                MyApplication.displayUnKnownError();
+            }
+        });
+    }
+    public void getConfirmationBookingWorkStation(final Context context, String body, final CommonCallback.Listener listener) {
+
+        if (!CustomProgressDialog.getInstance().isShowing()) {
+            CustomProgressDialog.getInstance().show(context, "", "");
+        }
+        RequestBody body_ = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body);
+        ApiInterface apiInterface = ApiConfiguration.getInstance().getApiBuilder().create(ApiInterface.class);
+        Call<BookingConfirmationApiResponse> call = apiInterface.confirmationbooking(body_);
+        call.enqueue(new Callback<BookingConfirmationApiResponse>() {
+            @Override
+            public void onResponse(Call<BookingConfirmationApiResponse> call, Response<BookingConfirmationApiResponse> response) {
+                CustomProgressDialog.getInstance().dismiss();
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus()) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        MyApplication.displayKnownError(response.body().getMessage());
+                        listener.onFailure(response.body().getMessage());
+                    }
+                } else {
+                    CommonFunctions.getInstance().apiError(context, response.errorBody(), listener);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingConfirmationApiResponse> call, Throwable t) {
                 CustomProgressDialog.getInstance().dismiss();
                 t.printStackTrace();
                 MyApplication.displayUnKnownError();

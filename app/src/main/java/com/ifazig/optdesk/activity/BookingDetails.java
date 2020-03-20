@@ -91,6 +91,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.imgBack:
                 finish();
+                break;
             case R.id.cancelBooking:
                 cancelalertDialog();
                 break;

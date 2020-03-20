@@ -1,6 +1,7 @@
 package com.ifazig.optdesk.api;
 
 
+import com.ifazig.optdesk.api_model.BookingConfirmationApiResponse;
 import com.ifazig.optdesk.api_model.BookingHistoryApiResponse;
 import com.ifazig.optdesk.api_model.BookingSuccessApiResponse;
 import com.ifazig.optdesk.api_model.CancelApiResponse;
@@ -48,7 +49,7 @@ public interface ApiInterface {
     Call<MultiValidWorkStationApiResponse> validWorkStation(@Body RequestBody body);
 
     @POST(Urls.CONFIRMATIONBOOKING)
-    Call<BookingSuccessApiResponse> confirmationbooking(@Body RequestBody body);
+    Call<BookingConfirmationApiResponse> confirmationbooking(@Body RequestBody body);
 
     @POST(Urls.BOOKINGWORKSTATION)
     Call<BookingSuccessApiResponse> bookingWorkStation(@Body RequestBody body);

@@ -5,8 +5,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -103,12 +107,12 @@ public class SeatBookingActivity extends AppCompatActivity implements View.OnCli
                 String body = gson.toJson(insertDataModel);
                 System.out.println("Input ==> " + body);
                 if (insertDataModel.getBook() != null && insertDataModel.getBook().size() > 0) {
-                    CommonApiCalls.getInstance().getBookingWorkStation(SeatBookingActivity.this, body, new CommonCallback.Listener() {
+                    CommonApiCalls.getInstance().getConfirmationBookingWorkStation(SeatBookingActivity.this, body, new CommonCallback.Listener() {
                         @Override
                         public void onSuccess(Object object) {
-                            BookingConfirmationApiResponse body = (BookingConfirmationApiResponse) object;
-                            if (body.getReturnData().getConfirmationDetails() != null && body.getReturnData().getConfirmationDetails().size() > 0) {
-
+                            BookingConfirmationApiResponse bodys = (BookingConfirmationApiResponse) object;
+                            if (bodys.getReturnData().getConfirmationDetails() != null && bodys.getReturnData().getConfirmationDetails().size() > 0) {
+                                confirmationDialog(bodys.getReturnData().getConfirmationDetails(),body);
                             }
                             //CommonFunctions.getInstance().successResponseToast(SeatBookingActivity.this, body.getMessage());
                             //CommonFunctions.getInstance().newIntent(SeatBookingActivity.this, SuccessActivity.class, Bundle.EMPTY, true, true);
@@ -124,5 +128,69 @@ public class SeatBookingActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
         }
+    }
+
+    // ---- Confirmation Dialog
+    private void confirmationDialog(List<BookingConfirmationApiResponse.ConfirmationDetail> items, String body) {
+        final Dialog dialogLogOut = new Dialog(SeatBookingActivity.this);
+        dialogLogOut.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogLogOut.setContentView(R.layout.confirmation_dialog_logout);
+        dialogLogOut.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialogLogOut.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialogLogOut.setCancelable(true);
+
+        TextView txtLocationvalue = (TextView) dialogLogOut.findViewById(R.id.txtLocationvalue);
+        TextView txtBuildingValue = (TextView) dialogLogOut.findViewById(R.id.txtBuildingValue);
+        TextView txtFloorvalue = (TextView) dialogLogOut.findViewById(R.id.txtFloorvalue);
+        TextView txtWingValue = (TextView) dialogLogOut.findViewById(R.id.txtWingValue);
+        LinearLayout confimationBooking = (LinearLayout) dialogLogOut.findViewById(R.id.confimationBooking);
+        LinearLayout item = (LinearLayout) dialogLogOut.findViewById(R.id.inflateLayoutOnes);
+        confimationBooking.setOnClickListener(this);
+        for (int i = 0; i <items.size(); i++) {
+            txtLocationvalue.setText(items.get(i).getLocationName());
+            txtBuildingValue.setText(items.get(i).getBuildingName());
+            txtFloorvalue.setText(items.get(i).getFloorName());
+            txtWingValue.setText(items.get(i).getWingName());
+            for (int j = 0; j < items.get(i).getBook().size(); j++) {
+
+                View newView1 = getLayoutInflater().inflate(R.layout.inflate_layout_two, null);
+                TextView workstationTxt = (TextView) newView1.findViewById(R.id.txtWorkStation);
+                TextView txtWorkStationvalue = (TextView) newView1.findViewById(R.id.txtWorkStationvalue);
+                TextView startDate = (TextView) newView1.findViewById(R.id.startDate);
+                TextView startTime = (TextView) newView1.findViewById(R.id.startTime);
+                TextView endDate = (TextView) newView1.findViewById(R.id.endDate);
+                TextView endTime = (TextView) newView1.findViewById(R.id.endTime);
+                workstationTxt.setText(LanguageConstants.workstationtxt);
+                txtWorkStationvalue.setText(items.get(i).getBook().get(j).getWorkstationName());
+                startDate.setText(items.get(i).getBook().get(j).getDate());
+                startTime.setText(items.get(i).getBook().get(j).getStartTime());
+                endDate.setText(items.get(i).getBook().get(j).getDate());
+                endTime.setText(items.get(i).getBook().get(j).getToTime());
+                item.addView(newView1);
+            }
+        }
+
+
+        dialogLogOut.show();
+        // --- Ok
+        confimationBooking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogLogOut.dismiss();
+                CommonApiCalls.getInstance().getBookingWorkStation(SeatBookingActivity.this, body, new CommonCallback.Listener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        BookingSuccessApiResponse body = (BookingSuccessApiResponse) object;
+                        CommonFunctions.getInstance().successResponseToast(SeatBookingActivity.this, body.getMessage());
+                        CommonFunctions.getInstance().newIntent(SeatBookingActivity.this, SuccessActivity.class, Bundle.EMPTY, true, true);
+                    }
+
+                    @Override
+                    public void onFailure(String reason) {
+
+                    }
+                });
+            }
+        });
     }
 }
