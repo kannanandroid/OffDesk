@@ -107,8 +107,11 @@ public class SeatBookingActivity extends AppCompatActivity implements View.OnCli
                         @Override
                         public void onSuccess(Object object) {
                             BookingConfirmationApiResponse body = (BookingConfirmationApiResponse) object;
-                            CommonFunctions.getInstance().successResponseToast(SeatBookingActivity.this, body.getMessage());
-                            CommonFunctions.getInstance().newIntent(SeatBookingActivity.this, SuccessActivity.class, Bundle.EMPTY, true, true);
+                            if (body.getReturnData().getConfirmationDetails() != null && body.getReturnData().getConfirmationDetails().size() > 0) {
+
+                            }
+                            //CommonFunctions.getInstance().successResponseToast(SeatBookingActivity.this, body.getMessage());
+                            //CommonFunctions.getInstance().newIntent(SeatBookingActivity.this, SuccessActivity.class, Bundle.EMPTY, true, true);
                         }
 
                         @Override
