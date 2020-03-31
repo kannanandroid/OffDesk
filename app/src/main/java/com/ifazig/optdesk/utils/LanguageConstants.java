@@ -97,6 +97,8 @@ public class LanguageConstants {
     public static String workstationtxt = "Workstation No";
     public static String selectseatfirst = "Select your seat first";
     public static String areYouSureWantToCancel="Are you sure want to Cancel ?";
+    public static String needpermission = "Permission Needed for access Locatoin";
+    public static String qridcantblank = "QR Id Can't be blank";
 
 
 }

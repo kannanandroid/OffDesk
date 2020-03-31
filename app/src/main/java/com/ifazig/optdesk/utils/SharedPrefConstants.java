@@ -20,6 +20,7 @@ public class SharedPrefConstants {
     public static final String ROLEID = "_pref_role_id";
     public static final String PROFILEPIC = "_pref_profile_pic";
     public static final String SELETEDDATE = "_pref_selected_date";
+    public static final String ISWORKSTATIONLOGIN = "_pref_isworkstationlogin";
 
     public static final String COMPANYID = "_pref_company_id";
     public static final String LOCATIONID = "_pref_location_id";

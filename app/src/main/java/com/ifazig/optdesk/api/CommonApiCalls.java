@@ -6,11 +6,11 @@ import com.ifazig.optdesk.api_model.BookingConfirmationApiResponse;
 import com.ifazig.optdesk.api_model.BookingHistoryApiResponse;
 import com.ifazig.optdesk.api_model.BookingSuccessApiResponse;
 import com.ifazig.optdesk.api_model.CancelApiResponse;
-import com.ifazig.optdesk.api_model.InsertFeedbcakApiResponse;
 import com.ifazig.optdesk.api_model.LoginApiResponseModel;
 import com.ifazig.optdesk.api_model.MultiValidWorkStationApiResponse;
+import com.ifazig.optdesk.api_model.ScanBookingApiResponse;
 import com.ifazig.optdesk.api_model.SettingsDetailsApiResponse;
-import com.ifazig.optdesk.api_model.ValidWorkStationApiResponse;
+import com.ifazig.optdesk.api_model.WorkstationLogoutApiResponse;
 import com.ifazig.optdesk.callback.CommonCallback;
 import com.ifazig.optdesk.utils.CommonFunctions;
 import com.ifazig.optdesk.utils.CustomProgressDialog;
@@ -191,6 +191,70 @@ public class CommonApiCalls {
 
             @Override
             public void onFailure(Call<BookingConfirmationApiResponse> call, Throwable t) {
+                CustomProgressDialog.getInstance().dismiss();
+                t.printStackTrace();
+                MyApplication.displayUnKnownError();
+            }
+        });
+    }
+    public void getscanbookingApi(final Context context, String body, final CommonCallback.Listener listener) {
+
+        if (!CustomProgressDialog.getInstance().isShowing()) {
+            CustomProgressDialog.getInstance().show(context, "", "");
+        }
+        RequestBody body_ = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body);
+        ApiInterface apiInterface = ApiConfiguration.getInstance().getApiBuilder().create(ApiInterface.class);
+        Call<ScanBookingApiResponse> call = apiInterface.getscanbooking(body_);
+        call.enqueue(new Callback<ScanBookingApiResponse>() {
+            @Override
+            public void onResponse(Call<ScanBookingApiResponse> call, Response<ScanBookingApiResponse> response) {
+                CustomProgressDialog.getInstance().dismiss();
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus()) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        MyApplication.displayKnownError(response.body().getMessage());
+                        listener.onFailure(response.body().getMessage());
+                    }
+                } else {
+                    CommonFunctions.getInstance().apiError(context, response.errorBody(), listener);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ScanBookingApiResponse> call, Throwable t) {
+                CustomProgressDialog.getInstance().dismiss();
+                t.printStackTrace();
+                MyApplication.displayUnKnownError();
+            }
+        });
+    }
+    public void getWorkStationLogoutApi(final Context context, String body, final CommonCallback.Listener listener) {
+
+        if (!CustomProgressDialog.getInstance().isShowing()) {
+            CustomProgressDialog.getInstance().show(context, "", "");
+        }
+        RequestBody body_ = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body);
+        ApiInterface apiInterface = ApiConfiguration.getInstance().getApiBuilder().create(ApiInterface.class);
+        Call<WorkstationLogoutApiResponse> call = apiInterface.getWorkStationLogout(body_);
+        call.enqueue(new Callback<WorkstationLogoutApiResponse>() {
+            @Override
+            public void onResponse(Call<WorkstationLogoutApiResponse> call, Response<WorkstationLogoutApiResponse> response) {
+                CustomProgressDialog.getInstance().dismiss();
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus()) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        MyApplication.displayKnownError(response.body().getMessage());
+                        listener.onFailure(response.body().getMessage());
+                    }
+                } else {
+                    CommonFunctions.getInstance().apiError(context, response.errorBody(), listener);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WorkstationLogoutApiResponse> call, Throwable t) {
                 CustomProgressDialog.getInstance().dismiss();
                 t.printStackTrace();
                 MyApplication.displayUnKnownError();

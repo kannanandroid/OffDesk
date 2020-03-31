@@ -15,8 +15,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.ifazig.optdesk.R;
 import com.ifazig.optdesk.adapter.NavigationMenuAdapters;
 import com.ifazig.optdesk.api_model.NavigationMenuModel;
@@ -86,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
 // --- logout
         navigationMenuModel = new NavigationMenuModel();
         navigationMenuModel.setNavigationItemId(NavigationMenuEnum.LOGOUT);
-        navigationMenuModel.setNavigationIcon(R.drawable.ic_logout);
+        navigationMenuModel.setNavigationIcon(R.drawable.ic_logout_new);
         navigationMenuModel.setNavigationItemName(LanguageConstants.logout);
         navigationMenuModels.add(navigationMenuModel);
         NavigationMenuAdapters navigationMenuAdapter = new NavigationMenuAdapters(HomeActivity.this, navigationMenuModels, new NavigationClick() {

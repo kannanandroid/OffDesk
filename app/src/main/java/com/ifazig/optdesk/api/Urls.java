@@ -23,6 +23,8 @@ class Urls {
     static final String CANCELBOOKING = "CancelBooking";
     static final String BOOKINGWORKSTATION = "MultipleSave";
     static final String CONFIRMATIONBOOKING = "ConfirmationBooking";
+    static final String SCANBOOKING = "ScanBooking";
+    static final String WORKSTATIONLOGOUT = "MobileLoginDetails";
 
 
     // Post Data create new complaint data

@@ -1,5 +1,6 @@
 package com.ifazig.optdesk.activity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -29,6 +31,9 @@ import com.ifazig.optdesk.utils.SharedPrefConstants;
 import com.ifazig.optdesk.utils.VersionComparator;
 
 import org.jsoup.Jsoup;
+
+import lolodev.permissionswrapper.callback.OnRequestPermissionsCallBack;
+import lolodev.permissionswrapper.wrapper.PermissionWrapper;
 
 public class SplashActivity extends AppCompatActivity {
     ActivitySplashBinding binding;
@@ -158,12 +163,35 @@ public class SplashActivity extends AppCompatActivity {
 
     void LoadNext() {
         if (CommonFunctions.getInstance().isActivityRunning(SplashActivity.this)) {
-            if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty()) {
-                //CommonFunctions.getInstance().newIntent(SplashActivity.this, HomeActivity.class, Bundle.EMPTY, true);
-                CommonFunctions.getInstance().newIntent(SplashActivity.this, LoginActivity.class, Bundle.EMPTY, true,true);
-            } else {
-                CommonFunctions.getInstance().newIntent(SplashActivity.this, LoginActivity.class, Bundle.EMPTY, true,true);
+            if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty() && SessionManager.getInstance().
+                    getFromPreference(SharedPrefConstants.ISWORKSTATIONLOGIN).trim().equalsIgnoreCase("1")) {
+                CommonFunctions.getInstance().newIntent(SplashActivity.this, Qrcodescanpage.class, Bundle.EMPTY, true, true);
+            } else if(!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty()){
+                CommonFunctions.getInstance().newIntent(SplashActivity.this, HomeActivity.class, Bundle.EMPTY, true, true);
+            }else {
+                CommonFunctions.getInstance().newIntent(SplashActivity.this, LoginActivity.class, Bundle.EMPTY, true, true);
             }
         }
+    }
+
+    private void permissionCheck() {
+        new PermissionWrapper.Builder(this)
+                .addPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})
+                //enable rationale message with a custom message
+                .addPermissionRationale(LanguageConstants.needpermission)
+                //show settings dialog,in this case with default message base on requested permission/s
+                .addPermissionsGoSettings(true)
+                //enable callback to know what option was choosen
+                .addRequestPermissionsCallBack(new OnRequestPermissionsCallBack() {
+                    @Override
+                    public void onGrant() {
+
+                    }
+
+                    @Override
+                    public void onDenied(String permission) {
+                        Toast.makeText(SplashActivity.this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_SHORT).show();
+                    }
+                }).build().request();
     }
 }

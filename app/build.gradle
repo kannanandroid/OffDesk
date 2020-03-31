@@ -60,4 +60,10 @@ dependencies {
     implementation 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.3'
     //calander
     implementation 'com.applandeo:material-calendar-view:1.7.0'
+    // permission handle
+    implementation 'com.github.lolucosmin:PermissionsWrapper:version_1.5'
+    // current location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    // animation
+    implementation 'com.airbnb.android:lottie:3.0.7'
 }

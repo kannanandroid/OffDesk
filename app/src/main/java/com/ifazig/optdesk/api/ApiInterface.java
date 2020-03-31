@@ -9,15 +9,14 @@ import com.ifazig.optdesk.api_model.FileuploadApiResponse;
 import com.ifazig.optdesk.api_model.InsertFeedbcakApiResponse;
 import com.ifazig.optdesk.api_model.LoginApiResponseModel;
 import com.ifazig.optdesk.api_model.MultiValidWorkStationApiResponse;
+import com.ifazig.optdesk.api_model.ScanBookingApiResponse;
 import com.ifazig.optdesk.api_model.SettingsDetailsApiResponse;
-import com.ifazig.optdesk.api_model.ValidWorkStationApiResponse;
+import com.ifazig.optdesk.api_model.WorkstationLogoutApiResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -50,6 +49,12 @@ public interface ApiInterface {
 
     @POST(Urls.CONFIRMATIONBOOKING)
     Call<BookingConfirmationApiResponse> confirmationbooking(@Body RequestBody body);
+
+    @POST(Urls.SCANBOOKING)
+    Call<ScanBookingApiResponse> getscanbooking(@Body RequestBody body);
+
+    @POST(Urls.WORKSTATIONLOGOUT)
+    Call<WorkstationLogoutApiResponse> getWorkStationLogout(@Body RequestBody body);
 
     @POST(Urls.BOOKINGWORKSTATION)
     Call<BookingSuccessApiResponse> bookingWorkStation(@Body RequestBody body);

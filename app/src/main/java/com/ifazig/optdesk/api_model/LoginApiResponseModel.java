@@ -345,6 +345,18 @@ public class LoginApiResponseModel {
         @Expose
         private String announcement;
 
+        public Integer getIsWorkstationLogin() {
+            return IsWorkstationLogin;
+        }
+
+        public void setIsWorkstationLogin(Integer isWorkstationLogin) {
+            IsWorkstationLogin = isWorkstationLogin;
+        }
+
+        @SerializedName("IsWorkstationLogin")
+        @Expose
+        private Integer IsWorkstationLogin;
+
         public Boolean getFromFramework() {
             return fromFramework;
         }

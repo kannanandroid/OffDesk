@@ -137,6 +137,9 @@ public class SettingsDetailsApiResponse {
         @SerializedName("InBetweenBook")
         @Expose
         private String inBetweenBook;
+        @SerializedName("Workstation")
+        @Expose
+        private Integer Workstation;
 
         public Integer getWorkStationSettingId() {
             return workStationSettingId;
@@ -258,5 +261,12 @@ public class SettingsDetailsApiResponse {
             this.inBetweenBook = inBetweenBook;
         }
 
+        public Integer getWorkstation() {
+            return Workstation;
+        }
+
+        public void setWorkstation(Integer workstation) {
+            Workstation = workstation;
+        }
     }
 }
