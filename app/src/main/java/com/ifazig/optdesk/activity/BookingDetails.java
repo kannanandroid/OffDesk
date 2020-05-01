@@ -103,7 +103,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    // ---- LogOut Dialog
+    // ---- cancel Dialog
     private void cancelalertDialog() {
         final Dialog dialogLogOut = new Dialog(BookingDetails.this);
         dialogLogOut.requestWindowFeature(Window.FEATURE_NO_TITLE);

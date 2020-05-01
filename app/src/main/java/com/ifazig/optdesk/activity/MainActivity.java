@@ -1,154 +1,247 @@
 package com.ifazig.optdesk.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.ifazig.optdesk.BuildConfig;
 import com.ifazig.optdesk.R;
+import com.ifazig.optdesk.utils.LocationAlertIntentService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final int LOC_PERM_REQ_CODE = 1;
+    //meters
+    private static final int GEOFENCE_RADIUS = 50;
+    //in milli seconds
+    private static final int GEOFENCE_EXPIRATION = 6000;
 
-    /**
-     * Represents a geographical location.
-     */
-    protected Location mLastLocation;
+    private GoogleMap mMap;
 
-    int REQUEST_PERMISSIONS_REQUEST_CODE = 1001;
-
-    FusedLocationProviderClient mFusedLocationClient;
-
-
-
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
-
-
-    Button btn_getLocation;
-
+    private GeofencingClient geofencingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar tb = findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
+        tb.setSubtitle("Location Alert");
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
+        geofencingClient = LocationServices.getGeofencingClient(this);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
-        btn_getLocation = (Button) findViewById(R.id.btn_get_location);
-        mLatitudeText = (TextView) findViewById((R.id.mLatitudeText));
-        mLongitudeText = (TextView) findViewById((R.id.mLongitudeText));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.setMinZoomPreference(15);
 
+        showCurrentLocationOnMap();
 
-        btn_getLocation.setOnClickListener(new View.OnClickListener() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onMapClick(LatLng latLng) {
+                // Drawing marker on the map
+                drawMarker(latLng);
 
-
-                if (!checkPermissions()) {
-                    requestPermissions();
-                } else {
-                    getLastLocation();
-                }
-
-
+                // Drawing circle on the map
+                drawCircle(latLng);
+                addLocationAlert(latLng.latitude, latLng.longitude);
             }
         });
+    }
+    private void drawMarker(LatLng point){
+        // Creating an instance of MarkerOptions
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        // Setting latitude and longitude for the marker
+        markerOptions.position(point);
+
+        // Adding marker on the Google Map
+        mMap.addMarker(markerOptions);
+    }
+
+    private void drawCircle(LatLng point){
+
+        // Instantiating CircleOptions to draw a circle around the marker
+        CircleOptions circleOptions = new CircleOptions();
+
+        // Specifying the center of the circle
+        circleOptions.center(point);
+
+        // Radius of the circle
+        circleOptions.radius(50);
+
+        // Border color of the circle
+        circleOptions.strokeColor(Color.BLACK);
+
+        // Fill color of the circle
+        circleOptions.fillColor(0x30ff0000);
+
+        // Border width of the circle
+        circleOptions.strokeWidth(2);
+
+        // Adding the circle to the GoogleMap
+        mMap.addCircle(circleOptions);
 
     }
 
-
-    /**
-     * Return the current state of the permissions needed.
-     */
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-
-    @SuppressWarnings("MissingPermission")
-    private void getLastLocation() {
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-
-                            mLastLocation = task.getResult();
-
-                            mLatitudeText.setText("Latitude : "+
-                                    mLastLocation.getLatitude() + "");
-                            mLongitudeText.setText("Longitude : "+
-                                    mLastLocation.getLongitude() + "");
-                        } else {
-
-                            showMessage("No Location found");
-
-                        }
-                    }
-                });
-    }
-
-
-    public void showMessage(String message) {
-        if (message == null || message.length() == 0)
-            return;
-
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void requestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLastLocation();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS_REQUEST_CODE);
+    @SuppressLint("MissingPermission")
+    private void showCurrentLocationOnMap() {
+        if (isLocationAccessPermitted()) {
+            requestLocationAccessPermission();
+        } else if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
         }
     }
+    private boolean isLocationAccessPermitted(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private void requestLocationAccessPermission(){
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOC_PERM_REQ_CODE);
+    }
 
-
+    @SuppressLint("MissingPermission")
+    private void addLocationAlert(double lat, double lng){
+        if (isLocationAccessPermitted()) {
+            requestLocationAccessPermission();
+        } else  {
+            String key = ""+lat+"-"+lng;
+            Geofence geofence = getGeofence(lat, lng, key);
+            geofencingClient.addGeofences(getGeofencingRequest(geofence),
+                    getGeofencePendingIntent())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this,
+                                        "Location alter has been added",
+                                        Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(MainActivity.this,
+                                        "Location alter could not be added",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+    private void removeLocationAlert(){
+        if (isLocationAccessPermitted()) {
+            requestLocationAccessPermission();
+        } else {
+            geofencingClient.removeGeofences(getGeofencePendingIntent())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this,
+                                        "Location alters have been removed",
+                                        Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(MainActivity.this,
+                                        "Location alters could not be removed",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-                getLastLocation();
-            } else {
-                Intent intent = new Intent();
-                intent.setAction(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package",
-                        BuildConfig.APPLICATION_ID, null);
-                intent.setData(uri);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+        switch (requestCode) {
+            case LOC_PERM_REQ_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showCurrentLocationOnMap();
+                    Toast.makeText(MainActivity.this,
+                            "Location access permission granted, you try " +
+                                    "add or remove location allerts",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return;
             }
-        }
 
+        }
+    }
+    private PendingIntent getGeofencePendingIntent() {
+        Intent intent = new Intent(this, LocationAlertIntentService.class);
+        return PendingIntent.getService(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
+        builder.addGeofence(geofence);
+        return builder.build();
+    }
+
+    private Geofence getGeofence(double lat, double lang, String key) {
+        return new Geofence.Builder()
+                .setRequestId(key)
+                .setCircularRegion(lat, lang, GEOFENCE_RADIUS)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setLoiteringDelay(10000)
+                .build();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_map, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_stop_monitor:
+                removeLocationAlert();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

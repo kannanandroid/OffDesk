@@ -66,6 +66,7 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
     protected static final int REQUEST_CHECK_SETTINGS = 2020;
     protected static final String TAG = "Qrcodescanpage";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,8 +132,8 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
 
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(10000 / 2);
+        locationRequest.setInterval(6000);
+        locationRequest.setFastestInterval(1000);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
@@ -276,7 +277,57 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
                     }
                 });
     }
+    /*private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }*/
 
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    public static float getKmFromLatLong(double lat1, double lng1, double lat2, double lng2) {
+        Location loc1 = new Location("");
+        loc1.setLatitude(lat1);
+        loc1.setLongitude(lng1);
+        Location loc2 = new Location("");
+        loc2.setLatitude(lat2);
+        loc2.setLongitude(lng2);
+        float distanceInMeters = loc1.distanceTo(loc2);
+        return distanceInMeters;
+    }
+
+    public static double distanceCalu(double lat1, double lat2, double lon1,
+                                      double lon2, double el1, double el2) {
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        double height = el1 - el2;
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        return Math.sqrt(distance);
+    }
 
     @Override
     protected void onPause() {
@@ -295,15 +346,29 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
                             mLastLocation = task.getResult();
                             lat = mLastLocation.getLatitude() + "";
                             lng = mLastLocation.getLongitude() + "";
+                            float distan = getKmFromLatLong(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.parseDouble(SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLATITUTE)), Double.parseDouble(SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE)));
+                            //Toast.makeText(Qrcodescanpage.this, ""+cool, Toast.LENGTH_SHORT).show();
+                            if (distan <= 500.00) {
+                                qrcodeApiCallNew(qrvalue);
+                            } else {
+                                CommonFunctions.getInstance().validationInfoError(Qrcodescanpage.this, LanguageConstants.outofworkstation);
+                            }
                         } else {
                             CommonFunctions.getInstance().validationInfoError(Qrcodescanpage.this, "No Location found");
                         }
                     }
                 });
+
+    }
+
+    private void qrcodeApiCallNew(String qrvalue) {
         ScanBookingModel scanBookingModel = new ScanBookingModel();
         scanBookingModel.setFloorMapBookingId(qrvalue);
         scanBookingModel.setLatitude(lat);
         scanBookingModel.setLongitude(lng);
+        scanBookingModel.setActualLatitude(SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLATITUTE));
+        scanBookingModel.setActualLongitude(SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE));
+        scanBookingModel.setUserId(SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID));
         //Toast.makeText(this, lat + " " + lng, Toast.LENGTH_SHORT).show();
         Gson gson = new Gson();
         String body = gson.toJson(scanBookingModel);
@@ -315,7 +380,6 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
                 binding.tvTicketNo.setText("");
                 CommonFunctions.getInstance().successResponseToast(Qrcodescanpage.this, body.getMessage());
                 CommonFunctions.getInstance().newIntent(Qrcodescanpage.this, SuccessAcitivity.class, Bundle.EMPTY, false, false);
-
             }
 
             @Override
@@ -327,7 +391,7 @@ public class Qrcodescanpage extends AppCompatActivity implements View.OnClickLis
 
     private void requestlocation() {
         LocationRequest mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(60000);
+        mLocationRequest.setInterval(6000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationCallback mLocationCallback = new LocationCallback() {

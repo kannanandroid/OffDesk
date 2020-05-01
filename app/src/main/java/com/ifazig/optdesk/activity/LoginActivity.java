@@ -110,19 +110,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
             case R.id.forgotpasswordTitle:
-                CommonFunctions.getInstance().newIntent(LoginActivity.this, ForgotPassword.class, Bundle.EMPTY, false, false);
+                CommonFunctions.getInstance().newIntent(LoginActivity.this, MapViewSelection_Activity.class, Bundle.EMPTY, false, false);
                 break;
             case R.id.lyoutNewAccount:
-                CommonFunctions.getInstance().newIntent(LoginActivity.this, RegisterActivity.class, Bundle.EMPTY, false, false);
+                CommonFunctions.getInstance().newIntent(LoginActivity.this, MainActivityNew.class, Bundle.EMPTY, false, false);
                 break;
 
             default:
                 break;
         }
     }
+
     private void OnGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
@@ -136,9 +137,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     private void permissionCheck() {
         new PermissionWrapper.Builder(this)
-                .addPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA})
+                .addPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA})
                 //enable rationale message with a custom message
                 .addPermissionRationale(LanguageConstants.needpermission)
                 //show settings dialog,in this case with default message base on requested permission/s
@@ -147,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addRequestPermissionsCallBack(new OnRequestPermissionsCallBack() {
                     @Override
                     public void onGrant() {
-                        locationManager  = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         if (locationManager != null) {
                             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                                 displayLocationSettingsRequest(LoginActivity.this);
@@ -165,6 +167,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }).build().request();
     }
+
     private void displayLocationSettingsRequest(Context context) {
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API).build();
@@ -205,6 +208,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
+
     /**
      * @param email
      * @param password
@@ -237,9 +241,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 buildingDetails = data.getBuildingDetails();
                                 floorDetails = data.getFloorDetails();
                                 wingDetails = data.getWingsDetails();
-                                if (body.getReturnData().getUserDetails().get(0).getIsWorkstationLogin().equals(1)) {
+                                if (body.getReturnData().getUserDetails().get(0).getIsWorkstationLogin().equals(1) && !SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE).isEmpty()) {
                                     CommonFunctions.getInstance().newIntent(LoginActivity.this, Qrcodescanpage.class, Bundle.EMPTY, true, true);
-                                } else {
+                                } else if(body.getReturnData().getUserDetails().get(0).getIsWorkstationLogin().equals(1) && SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE).isEmpty()){
+                                    CommonFunctions.getInstance().newIntent(LoginActivity.this, MapViewSelection_Activity.class, Bundle.EMPTY, true, true);
+                                }else {
                                     CommonFunctions.getInstance().newIntent(LoginActivity.this, HomeActivity.class, Bundle.EMPTY, true, true);
                                 }
                             } else {

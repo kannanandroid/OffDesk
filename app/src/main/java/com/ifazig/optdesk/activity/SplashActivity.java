@@ -163,12 +163,17 @@ public class SplashActivity extends AppCompatActivity {
 
     void LoadNext() {
         if (CommonFunctions.getInstance().isActivityRunning(SplashActivity.this)) {
-            if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty() && SessionManager.getInstance().
-                    getFromPreference(SharedPrefConstants.ISWORKSTATIONLOGIN).trim().equalsIgnoreCase("1")) {
+            if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty() &&
+                    SessionManager.getInstance().getFromPreference(SharedPrefConstants.ISWORKSTATIONLOGIN).trim().equalsIgnoreCase("1")
+                    && !SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE).isEmpty()) {
                 CommonFunctions.getInstance().newIntent(SplashActivity.this, Qrcodescanpage.class, Bundle.EMPTY, true, true);
-            } else if(!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty()){
+            } else if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty() &&
+                    SessionManager.getInstance().getFromPreference(SharedPrefConstants.ISWORKSTATIONLOGIN).trim().equalsIgnoreCase("1")
+                    && SessionManager.getInstance().getFromPreference(SharedPrefConstants.WORKSTLONGITUTE).isEmpty()) {
+                CommonFunctions.getInstance().newIntent(SplashActivity.this, MapViewSelection_Activity.class, Bundle.EMPTY, true, true);
+            } else if (!SessionManager.getInstance().getFromPreference(SharedPrefConstants.USERID).trim().isEmpty()) {
                 CommonFunctions.getInstance().newIntent(SplashActivity.this, HomeActivity.class, Bundle.EMPTY, true, true);
-            }else {
+            } else {
                 CommonFunctions.getInstance().newIntent(SplashActivity.this, LoginActivity.class, Bundle.EMPTY, true, true);
             }
         }

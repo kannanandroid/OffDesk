@@ -3,7 +3,6 @@ package com.ifazig.optdesk.utils;
 public class LanguageConstants {
 
 
-
     private static LanguageConstants commonLanguageInstance = new LanguageConstants();
 
 
@@ -96,9 +95,11 @@ public class LanguageConstants {
     public static String selectcompanyfirst = "Select Company";
     public static String workstationtxt = "Workstation No";
     public static String selectseatfirst = "Select your seat first";
-    public static String areYouSureWantToCancel="Are you sure want to Cancel ?";
+    public static String areYouSureWantToCancel = "Are you sure want to Cancel ?";
     public static String needpermission = "Permission Needed for access Locatoin";
     public static String qridcantblank = "QR Id Can't be blank";
-
+    public static String wsconfirmTxt = "This is your Work Location Confirm?";
+    public static String outofworkstation = "You aren't in work location";
 
 }
+
